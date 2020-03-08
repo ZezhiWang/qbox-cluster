@@ -12,7 +12,7 @@ Build the Q Coordination Engine (or `qbox`) and the Istio `BookInfo` application
 
  - `gcloud` installed locally. Follow [these instructions](https://cloud.google.com/sdk/docs/downloads-interactive) to install `gcloud` for your platform.
 
- - (Optional) `make` installed locally. This is so that you can run commands from the `Makefile` as needed. 
+ - `make` installed locally. This is so that you can run commands from the `Makefile` as needed. 
 
  - A service account key generated from Google Cloud for the project stored on your machine somewhere. This is necessary so that you can use `gcloud` to connect to GCP. If you don't have a service account, follow [these instructions](https://cloud.google.com/iam/docs/creating-managing-service-accounts). If you need to generate a key for an existing service account, follow [these instructions](https://cloud.google.com/iam/docs/creating-managing-service-account-keys) to generate and download.
 
@@ -27,5 +27,8 @@ Build the Q Coordination Engine (or `qbox`) and the Istio `BookInfo` application
  bookinfo_apps_path = "istio-microservices/bookinfo/platform/kube/bookinfo.yaml"
  ```
 
-# Details
+# Instructions
 
+- Run `make build` to build a new cluster and deploy your YAML files.
+- Run `make destroy` to teardown the cluster and all YAMLs running on it.
+- Run `make show` to inspect the current state of the Terraform resources (YAMLs and GKE cluster)
