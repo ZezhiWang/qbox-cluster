@@ -24,6 +24,9 @@ resource "google_container_cluster" "primary" {
   master_auth {
     username = "admin"
     password = var.password
+    client_certificate_config {
+      issue_client_certificate = false
+    }
   }
 
   addons_config {
@@ -32,4 +35,13 @@ resource "google_container_cluster" "primary" {
     }
   }
 
+}
+
+output "cluster_name" {
+  value = google_container_cluster.primary.name
+}
+
+
+output "cluster_zone" {
+  value = google_container_cluster.primary.zone
 }

@@ -8,7 +8,7 @@ Build the Q Coordination Engine (or `qbox`) and the Istio `BookInfo` application
 
  - A working `kubectl`. Follow [these instructions](https://kubernetes.io/docs/tasks/tools/install-kubectl/) to set up `kubectl` locally if not set. 
 
- - The third-party [`kubectl` Terraform provider](https://gavinbunney.github.io/terraform-provider-kubectl/docs/provider.html). Unfortunately, the standard Kubernetes provider does not currently support applying arbitrary YAMLs. This means we cannot apply CRDs or other resources through that provider.
+ - The third-party [`kubectl` Terraform provider](https://gavinbunney.github.io/terraform-provider-kubectl/docs/provider.html). Unfortunately, the standard Kubernetes provider does not currently support applying arbitrary YAMLs. This means we cannot apply CRDs or other resources through that provider. So we're using this one instead.
 
  - `gcloud` installed locally. Follow [these instructions](https://cloud.google.com/sdk/docs/downloads-interactive) to install `gcloud` for your platform.
 
@@ -24,6 +24,7 @@ Build the Q Coordination Engine (or `qbox`) and the Istio `BookInfo` application
  ```
  service_account_key_path = "<full path to the service account key JSON file you generated as a prereq>"
  password = "<Kubernetes API password for use with kubectl; consult with other team member for this value>"
+ bookinfo_apps_path = "istio-microservices/bookinfo/platform/kube/bookinfo.yaml"
  ```
 
 # Details
