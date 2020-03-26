@@ -14,8 +14,8 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-import copy
 from __future__ import print_function
+import copy
 from flask_bootstrap import Bootstrap
 from flask import Flask, request, session, render_template, redirect, url_for
 from flask import _request_ctx_stack as stack
@@ -289,7 +289,7 @@ def productsRoute():
     if request.method == "POST":
         product = {
             "id": len(products),
-            "title": request.headers["Title"]
+            "title": request.headers["Title"],
             "descriptionHtml": request.text 
         }
 
