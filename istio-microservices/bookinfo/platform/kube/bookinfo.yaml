@@ -42,6 +42,7 @@ spec:
     name: http
   selector:
     app: details
+  type: LoadBalancer
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -93,6 +94,7 @@ spec:
     name: http
   selector:
     app: ratings
+  type: LoadBalancer
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -144,6 +146,7 @@ spec:
     name: http
   selector:
     app: reviews
+  type: LoadBalancer
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -288,6 +291,7 @@ spec:
     name: http
   selector:
     app: productpage
+  type: LoadBalancer
 ---
 apiVersion: v1
 kind: ServiceAccount
