@@ -399,7 +399,7 @@ def addFakeProductRatingAndDetails(product_id):
     """
 
     try:
-        res = requests.get("http://localhost:20000", headers={"Start-Faking": "True", "Product-Id": product_id})
+        res = requests.get("http://localhost:3001", headers={"Start-Faking": "True", "Product-Id": product_id})
         return res.status_code, res.text
     except Exception as e:
         return 500, str(e)
