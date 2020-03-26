@@ -14,7 +14,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-
+import copy
 from __future__ import print_function
 from flask_bootstrap import Bootstrap
 from flask import Flask, request, session, render_template, redirect, url_for
@@ -93,6 +93,14 @@ service_dict = {
     "details": details,
     "reviews": reviews,
 }
+
+products = [
+    {
+        'id': 0,
+        'title': 'The Comedy of Errors',
+        'descriptionHtml': '<a href="https://en.wikipedia.org/wiki/The_Comedy_of_Errors">Wikipedia Summary</a>: The Comedy of Errors is one of <b>William Shakespeare\'s</b> early plays. It is his shortest and one of his most farcical comedies, with a major part of the humour coming from slapstick and mistaken identity, in addition to puns and word play.'
+    }
+]
 
 # A note on distributed tracing:
 #
@@ -277,7 +285,24 @@ def front():
 # The API:
 @app.route('/api/v1/products')
 def productsRoute():
-    return json.dumps(getProducts()), 200, {'Content-Type': 'application/json'}
+
+    if request.method == "POST":
+        product = {
+            "id": len(products),
+            "title": request.headers["Title"]
+            "descriptionHtml": request.text 
+        }
+
+        products.append(product)
+
+        code, response = addFakeProductRatingAndDetails(product["id"])
+        if code != 200:
+            products.pop()
+
+        return json.dumps(getProducts()), 200, {'Content-Type': 'application/json', "Product-Page-Added": "True"}
+
+    else:
+        return json.dumps(getProducts()), 200, {'Content-Type': 'application/json'}
 
 
 @app.route('/api/v1/products/<product_id>')
@@ -303,16 +328,20 @@ def ratingsRoute(product_id):
     status, ratings = getProductRatings(product_id, headers)
     return json.dumps(ratings), status, {'Content-Type': 'application/json'}
 
-
 # Data providers:
 def getProducts():
-    return [
-        {
-            'id': 0,
-            'title': 'The Comedy of Errors',
-            'descriptionHtml': '<a href="https://en.wikipedia.org/wiki/The_Comedy_of_Errors">Wikipedia Summary</a>: The Comedy of Errors is one of <b>William Shakespeare\'s</b> early plays. It is his shortest and one of his most farcical comedies, with a major part of the humour coming from slapstick and mistaken identity, in addition to puns and word play.'
-        }
-    ]
+    """ Modified to fetch ratings for all of its products """
+
+    products_with_ratings = []
+
+    for product in products:
+        new_product = copy.deepcopy(product)
+        _, product_ratings = getProductRatings(new_product["id"], {})
+        new_product["ratings"] = product_ratings
+
+        products_with_ratings.append(new_product)
+
+    return products_with_ratings
 
 
 def getProduct(product_id):
@@ -363,17 +392,17 @@ def getProductRatings(product_id, headers):
         status = res.status_code if res is not None and res.status_code else 500
         return status, {'error': 'Sorry, product ratings are currently unavailable for this book.'}
 
+def addFakeProductRatingAndDetails(product_id):
+    """
+    Let the saga transaction begin! This request should be intersected by qbox,
+    and the response should be returned from qbox
+    """
 
-class Writer(object):
-    def __init__(self, filename):
-        self.file = open(filename, 'w')
-
-    def write(self, data):
-        self.file.write(data)
-
-    def flush(self):
-        self.file.flush()
-
+    try:
+        res = requests.get("http://localhost:3001", headers={"Start-Faking": "True", "Product-Id": product_id})
+        return res.status_code, res.text
+    except Exception as e:
+        return 500, str(e)
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
