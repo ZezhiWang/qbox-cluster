@@ -283,7 +283,7 @@ def front():
 
 
 # The API:
-@app.route('/api/v1/products')
+@app.route('/api/v1/products', methods=["POST", "GET"])
 def productsRoute():
 
     if request.method == "POST":
