@@ -114,6 +114,7 @@ def get_book_details(id)
       book["id"] == id
     end
     return book_detail[0]
+end
 
 def add_book_detail(id)
     $book_details.push({
