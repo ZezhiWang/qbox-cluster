@@ -57,7 +57,7 @@ server.mount_proc '/details' do |req, res|
         rescue
           raise 'please provide numeric product id'
         end
-        details = get_book_details(id, headers)
+        details = get_book_details(id)
         res.body = details.to_json
         res['Content-Type'] = 'application/json'
     rescue => error
@@ -67,7 +67,7 @@ server.mount_proc '/details' do |req, res|
     end
 end
 
-server.mount_proc '/details/addFake' do |req, res|
+server.mount_proc '/details/add' do |req, res|
     pathParts = req.path.split('/')
     headers = get_forward_headers(req)
 
@@ -78,7 +78,7 @@ server.mount_proc '/details/addFake' do |req, res|
           raise 'please provide numeric product id'
         end
         add_book_detail(id)
-        details = get_book_details(id, headers)
+        details = get_book_details(id)
         res.body = details.to_json
         res['Content-Type'] = 'application/json'
     rescue => error
@@ -88,13 +88,33 @@ server.mount_proc '/details/addFake' do |req, res|
     end
 end
 
+server.mount_proc '/details/remove' do |req, res|
+    pathParts = req.path.split('/')
+    headers = get_forward_headers(req)
+
+    begin
+        begin
+          id = Integer(pathParts[-1])
+        rescue
+          raise 'please provide numeric product id'
+        end
+        delete_book_detail(id)
+        res.body = "success"
+        res['Content-Type'] = 'application/json'
+    rescue => error
+        res.body = {'error' => error}.to_json
+        res['Content-Type'] = 'application/json'
+        res.status = 400
+    end
+end
+
 # TODO: provide details on different books.
-def get_book_details(id, headers)
+def get_book_details(id)
     book_detail = book_details.select do |book|
       book[:id] == id
     end
 
-    return book_detail[-1]
+    return book_detail
 end
 
 def add_book_detail(id)
@@ -109,6 +129,14 @@ def add_book_detail(id)
       'ISBN-10' => rand(36**10).to_s(36),
       'ISBN-13' => rand(36**13).to_s(36)
     })
+end
+
+def delete_book_detail(id)
+    book = get_book_details(id)
+    # check if book was actually returned
+    if book.is_a?(Hash) then
+      book_details.delete(book)
+    end
 end
 
 def get_forward_headers(request)

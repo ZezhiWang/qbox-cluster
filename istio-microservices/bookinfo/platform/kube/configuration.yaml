@@ -1,0 +1,55 @@
+host: productpage.svc
+matchRequest:
+  headers:
+    Start-Faking: 'True'
+  method: GET
+  url: http://localhost:3001/
+onAllSucceeded:
+  body: 'Ratings: ${transaction[0].response.body}
+
+    Details: ${transaction[1].response.body}
+
+    '
+  status-code: 200
+onAnyFailed:
+  body: 'Ratings: ${transaction[0].response.body}
+
+    Details: ${transaction[1].response.body}
+
+    '
+  status-code: 500
+onMatchedRequest:
+- isSuccessIfReceives:
+  - headers:
+      Content-type: application/json
+    status-code: 200
+  maxRetriesOnTimeout: 3
+  method: GET
+  onFailure:
+  - isSuccessIfReceives:
+    - headers:
+        Content-type: application/json
+      status-code: 200
+    maxRetriesOnTimeout: 1
+    method: GET
+    timeout: 3
+    url: http://ratings.svc/delete/${root.headers.Product-Id}
+  timeout: 30
+  url: http://ratings.svc/add/${parent.headers.Product-Id}
+- isSuccessIfReceives:
+  - headers:
+      Content-type: application/json
+    status-code: 200
+  maxRetriesOnTimeout: 3
+  method: GET
+  onFailure:
+  - isSuccessIfReceives:
+    - headers:
+        Content-type: application/json
+      status-code: 200
+    maxRetriesOnTimeout: 1
+    method: GET
+    timeout: 3
+    url: http://details.svc/details/remove/${root.headers.Product-Id}
+  timeout: 30
+  url: http://details.svc/details/add/${root.headers.Product-Id}

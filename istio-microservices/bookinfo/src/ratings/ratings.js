@@ -116,15 +116,29 @@ dispatcher.onGet('/health', function (req, res) {
 })
 
 
-dispatcher.onGet('/add', function (req, res) {
+dispatcher.onGet(/^\/add\/[0-9]*/, function (req, res) {
+
+    var productIdStr = req.url.split('/').pop()
+    var productId = parseInt(productIdStr)
 
     fake_ratings = {}
     [1,2,3].map(_ => {
       fake_ratings[faker.name.findName()] = faker.random.number()
     })
 
-    putLocalReviews(req.headers["Product-Id"], fake_ratings)
-    return getLocalReviewsSuccessful(res, req.headers["Product-Id"])
+    putLocalReviews(productId, fake_ratings)
+    res.writeHead(200, {'Content-type': 'application/json'})
+    res.end(JSON.stringify(userAddedRatings))
+})
+
+dispatcher.onGet(/^\/delete\/[0-9]*/, function (req, res) {
+
+    var productIdStr = req.url.split('/').pop()
+    var productId = parseInt(productIdStr)
+
+    removeLocalReviews(productId)
+    res.writeHead(200, {'Content-type': 'application/json'})
+    res.end(JSON.stringify(userAddedRatings))
 })
 
 function putLocalReviews (productId, ratings) {
@@ -133,6 +147,13 @@ function putLocalReviews (productId, ratings) {
     ratings: ratings
   }
   return getLocalReviews(productId)
+}
+
+function removeLocalReviews (productId) {
+  if (productId in userAddedRatings) {
+    delete userAddedRatings[productId]
+  }
+  return null
 }
 
 function getLocalReviewsSuccessful(res, productId) {

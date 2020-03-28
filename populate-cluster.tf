@@ -14,6 +14,13 @@ data "kubectl_file_documents" "manifests" {
     content = file(var.bookinfo_apps_path)
 }
 
+resource "null_resource" "add_configmap" {
+  provisioner "local-exec" {
+    command = "kubectl create configmap productpage-configmap --from-file ${var.productpage_config_file}"
+    interpreter = ["/bin/bash", "-c"]
+  }
+}
+
 resource "kubectl_manifest" "bookinfo" {
     for_each = toset(data.kubectl_file_documents.manifests.documents)
     yaml_body = each.value
