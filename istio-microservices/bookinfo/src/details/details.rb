@@ -27,10 +27,10 @@ port = Integer(ARGV[0])
 
 server = WEBrick::HTTPServer.new :BindAddress => '*', :Port => port
 
-book_details = [{
+$book_details = [{
     'id' => 0,
-    'author': 'William Shakespeare',
-    'year': 1595,
+    'author' => 'William Shakespeare',
+    'year' => 1595,
     'type' => 'paperback',
     'pages' => 200,
     'publisher' => 'PublisherA',
@@ -110,18 +110,16 @@ end
 
 # TODO: provide details on different books.
 def get_book_details(id)
-    book_detail = book_details.select do |book|
-      book[:id] == id
+    book_detail = $book_details.select do |book|
+      book["id"] == id
     end
-
-    return book_detail
-end
+    return book_detail[0]
 
 def add_book_detail(id)
-    book_details.push({
+    $book_details.push({
       'id' => id,
-      'author': rand(36**12).to_s(36),
-      'year': rand(2000),
+      'author'=> rand(36**12).to_s(36),
+      'year'=> rand(2000),
       'type' => rand(36**9).to_s(36),
       'pages' => 200,
       'publisher' => rand(36**8).to_s(36),
@@ -135,7 +133,7 @@ def delete_book_detail(id)
     book = get_book_details(id)
     # check if book was actually returned
     if book.is_a?(Hash) then
-      book_details.delete(book)
+      $book_details.delete(book)
     end
 end
 
