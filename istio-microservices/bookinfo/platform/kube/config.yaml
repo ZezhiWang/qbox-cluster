@@ -33,9 +33,9 @@ onMatchedRequest:
     maxRetriesOnTimeout: 1
     method: GET
     timeout: 3
-    url: http://ratings.svc/delete/${root.headers.Product-Id}
+    url: http://ratings.default.svc:9080/delete/${root.headers.Product-Id}
   timeout: 30
-  url: http://ratings.svc/add/${parent.headers.Product-Id}
+  url: http://ratings.default.svc:9080/add/${parent.headers.Product-Id}
 - isSuccessIfReceives:
   - headers:
       Content-type: application/json
@@ -50,6 +50,6 @@ onMatchedRequest:
     maxRetriesOnTimeout: 1
     method: GET
     timeout: 3
-    url: http://details.svc/details/remove/${root.headers.Product-Id}
+    url: http://details.default.svc:9080/details/remove/${root.headers.Product-Id}
   timeout: 30
-  url: http://details.svc/details/add/${root.headers.Product-Id}
+  url: http://details.default.svc:9080/details/add/${root.headers.Product-Id}
