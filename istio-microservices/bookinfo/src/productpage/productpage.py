@@ -290,7 +290,7 @@ def productsRoute():
         product = {
             "id": len(products),
             "title": request.headers["Title"],
-            "descriptionHtml": request.text 
+            "descriptionHtml": request.form or request.data,
         }
 
         products.append(product)
@@ -298,8 +298,9 @@ def productsRoute():
         code, response = addFakeProductRatingAndDetails(product["id"])
         if code != 200:
             products.pop()
-
-        return json.dumps(getProducts()), 200, {'Content-Type': 'application/json', "Product-Page-Added": "True"}
+            return json.dumps(response), 500, {'Content-Type': 'application/json', "Product-Page-Added": "False"}
+        else:
+            return json.dumps(getProducts()), 200, {'Content-Type': 'application/json', "Product-Page-Added": "True"}
 
     else:
         return json.dumps(getProducts()), 200, {'Content-Type': 'application/json'}
@@ -399,8 +400,10 @@ def addFakeProductRatingAndDetails(product_id):
     """
 
     try:
-        res = requests.get("http://localhost:3001", headers={"Start-Faking": "True", "Product-Id": product_id})
-        return res.status_code, res.text
+        res = requests.get("http://localhost:3002", 
+            headers={"Start-Faking": "True", "Product-Id": str(product_id)},
+            proxies={"http": "http://localhost:3001", "https": "http://localhost:3001"})
+        return res.status_code, res.content
     except Exception as e:
         return 500, str(e)
 
