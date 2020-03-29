@@ -331,6 +331,7 @@ spec:
           mountPath: /tmp
       - name: qbox
         image: docker.io/akshatm/qbox:latest
+        imagePullPolicy: Always
         volumeMounts:
         - name: config-volume
           mountPath: /configuration/

@@ -33,9 +33,9 @@ onMatchedRequest:
     maxRetriesOnTimeout: 1
     method: GET
     timeout: 3
-    url: http://ratings.default.svc:9080/delete/${root.headers.Product-Id}
+    url: http://ratings.default.svc:9080/ratings/delete/${root.headers.Product-Id}
   timeout: 30
-  url: http://ratings.default.svc:9080/add/${parent.headers.Product-Id}
+  url: http://ratings.default.svc:9080/ratings/add/${parent.headers.Product-Id}
 - isSuccessIfReceives:
   - headers:
       Content-type: application/json
