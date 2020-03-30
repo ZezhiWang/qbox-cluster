@@ -73,7 +73,7 @@ spec:
       serviceAccountName: bookinfo-details
       containers:
       - name: details
-        image: docker.io/gordonwu/examples-bookinfo-details-v1:latest
+        image: docker.io/cs2952fspring2020amahajcwu/examples-bookinfo-details-v1:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
@@ -125,7 +125,7 @@ spec:
       serviceAccountName: bookinfo-ratings
       containers:
       - name: ratings
-        image: docker.io/gordonwu/examples-bookinfo-ratings-v1:latest
+        image: docker.io/cs2952fspring2020amahajcwu/examples-bookinfo-ratings-v1:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
@@ -177,7 +177,7 @@ spec:
       serviceAccountName: bookinfo-reviews
       containers:
       - name: reviews
-        image: docker.io/gordonwu/examples-bookinfo-reviews-v1:latest
+        image: docker.io/cs2952fspring2020amahajcwu/examples-bookinfo-reviews-v1:latest
         imagePullPolicy: IfNotPresent
         env:
         - name: LOG_DIR
@@ -217,7 +217,7 @@ spec:
       serviceAccountName: bookinfo-reviews
       containers:
       - name: reviews
-        image: docker.io/gordonwu/examples-bookinfo-reviews-v2:latest
+        image: docker.io/cs2952fspring2020amahajcwu/examples-bookinfo-reviews-v2:latest
         imagePullPolicy: IfNotPresent
         env:
         - name: LOG_DIR
@@ -257,7 +257,7 @@ spec:
       serviceAccountName: bookinfo-reviews
       containers:
       - name: reviews
-        image: docker.io/gordonwu/examples-bookinfo-reviews-v3:latest
+        image: docker.io/cs2952fspring2020amahajcwu/examples-bookinfo-reviews-v3:latest
         imagePullPolicy: IfNotPresent
         env:
         - name: LOG_DIR
@@ -322,7 +322,7 @@ spec:
       serviceAccountName: bookinfo-productpage
       containers:
       - name: productpage
-        image: docker.io/gordonwu/examples-bookinfo-productpage-v1:latest
+        image: docker.io/cs2952fspring2020amahajcwu/examples-bookinfo-productpage-v1:latest
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9080
