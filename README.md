@@ -24,11 +24,14 @@ Build the Q Coordination Engine (or `qbox`) and the Istio `BookInfo` application
  ```
  service_account_key_path = "<full path to the service account key JSON file you generated as a prereq>"
  password = "<Kubernetes API password for use with kubectl; consult with other team member for this value>"
- bookinfo_apps_path = "istio-microservices/bookinfo/platform/kube/bookinfo.yaml"
- productpage_config_file = "istio-microservices/bookinfo/platform/kube/configuration.yaml"
  ```
 
 # Instructions
+Run command:
+```
+python3.7 DAG-parser.py DAG.json values.tfvars
+```
+This generates the manifest and all the configmaps needed according to the DAG specified in DAG.json.
 
 - Run `make build` to build a new cluster and deploy your YAML files.
 - Run `make destroy` to teardown the cluster and all YAMLs running on it.

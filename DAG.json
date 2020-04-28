@@ -1,0 +1,9 @@
+{
+    "root": "service1",
+    "nodes": ["service1","service2","service3","service4","service5"],
+    "edges": {
+        "service1": ["service2", "service3"],
+        "service2": ["service4", "service5"]
+    },
+    "bad": []
+}

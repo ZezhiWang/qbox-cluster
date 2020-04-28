@@ -10,6 +10,6 @@ variable "bookinfo_apps_path" {
   type = string
 }
 
-variable "productpage_config_file" {
+variable "add_configmap" {
   type = string
 }

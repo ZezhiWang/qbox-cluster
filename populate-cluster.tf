@@ -16,9 +16,10 @@ data "kubectl_file_documents" "manifests" {
 
 resource "null_resource" "add_configmap" {
   provisioner "local-exec" {
-    command = "kubectl create configmap productpage-configmap --from-file ${var.productpage_config_file}"
+    command = var.add_configmap
     interpreter = ["/bin/bash", "-c"]
   }
+  depends_on = [google_container_cluster.primary]
 }
 
 resource "kubectl_manifest" "bookinfo" {
