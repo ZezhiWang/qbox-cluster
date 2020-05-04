@@ -62,7 +62,11 @@ class DeploymentTemplate:
                                         {
                                             "containerPort": 9080
                                         }
-                                    ]
+                                    ],
+                                    "env": [{
+                                        "name": "NAME",
+                                        "value": name
+                                    }],
                                 }
                             ]
                         }
@@ -70,6 +74,10 @@ class DeploymentTemplate:
                 }
             }
         if middle:
+            self.template["spec"]["template"]["spec"]["containers"][0]["env"].append({
+                "name": "MIDDLE",
+                "value": "True"
+            })
             self.template["spec"]["template"]["spec"]["containers"].append(
                 {
                     "name": "qbox",
