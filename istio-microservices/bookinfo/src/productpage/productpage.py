@@ -62,6 +62,9 @@ detailsHostname = "details" if (os.environ.get("DETAILS_HOSTNAME") is None) else
 ratingsHostname = "ratings" if (os.environ.get("RATINGS_HOSTNAME") is None) else os.environ.get("RATINGS_HOSTNAME")
 reviewsHostname = "reviews" if (os.environ.get("REVIEWS_HOSTNAME") is None) else os.environ.get("REVIEWS_HOSTNAME")
 
+# get sagas service name
+sagasHostname = "sagas" if (os.environ.get("SAGAS_HOSTNAME") is None) else os.environ.get("SAGAS_HOSTNAME")
+
 flood_factor = 0 if (os.environ.get("FLOOD_FACTOR") is None) else int(os.environ.get("FLOOD_FACTOR"))
 
 details = {
@@ -101,6 +104,11 @@ products = [
         'descriptionHtml': '<a href="https://en.wikipedia.org/wiki/The_Comedy_of_Errors">Wikipedia Summary</a>: The Comedy of Errors is one of <b>William Shakespeare\'s</b> early plays. It is his shortest and one of his most farcical comedies, with a major part of the humour coming from slapstick and mistaken identity, in addition to puns and word play.'
     }
 ]
+
+sagas = {
+    "name": "http://{0}{1}:8080".format(sagasHostname, servicesDomain),
+    "endpoint": "sagas",
+}
 
 # A note on distributed tracing:
 #
@@ -289,7 +297,7 @@ def productsRoute():
     if request.method == "POST":
         product = {
             "id": len(products),
-            "title": request.headers["Title"]
+            "title": request.headers["Title"],
             "descriptionHtml": request.text 
         }
 
@@ -392,17 +400,50 @@ def getProductRatings(product_id, headers):
         status = res.status_code if res is not None and res.status_code else 500
         return status, {'error': 'Sorry, product ratings are currently unavailable for this book.'}
 
+
 def addFakeProductRatingAndDetails(product_id):
     """
     Let the saga transaction begin! This request should be intersected by qbox,
     and the response should be returned from qbox
     """
+    url = sagas['name'] + "/" + sagas['endpoint']
+    data = {
+        "tier": {
+            "0": {
+                "req1": {
+                    "partial_req": {
+                        "method": "GET",
+                        "url": "http://ratings.default.svc:9080/ratings/add/" + str(product_id),
+                        "body": ""
+                    },
+                    "comp_req": {
+                        "method": "GET",
+                        "url": "http://ratings.default.svc:9080/ratings/delete/" + str(product_id),
+                        "body": ""
+                    }
+                },
+                "req2": {
+                    "partial_req": {
+                        "method": "GET",
+                        "url": "http://details.default.svc:9080/details/add/" + str(product_id),
+                        "body": ""
+                    },
+                    "comp_req": {
+                        "method": "GET",
+                        "url": "http://details.default.svc:9080/details/remove/" + str(product_id),
+                        "body": ""
+                    }
+                }
+            }
+        }
+    }
 
     try:
-        res = requests.get("http://localhost:3001", headers={"Start-Faking": "True", "Product-Id": product_id})
+        res = requests.post(url, allow_redirects=True, json=data)
         return res.status_code, res.text
     except Exception as e:
         return 500, str(e)
+
 
 if __name__ == '__main__':
     if len(sys.argv) < 2:
