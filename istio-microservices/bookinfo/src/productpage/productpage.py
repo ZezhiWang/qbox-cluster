@@ -106,7 +106,7 @@ products = [
 ]
 
 sagas = {
-    "name": "http://{}:8080".format(sagasHostname),
+    "name": "http://{}.{}.svc.cluster.local:8080".format(sagasHostname, "yac"),
     "endpoint": "saga",
 }
 
@@ -291,23 +291,24 @@ def front():
 
 
 # The API:
-@app.route('/api/v1/products')
+@app.route('/api/v1/products', methods=["POST", "GET"])
 def productsRoute():
 
     if request.method == "POST":
         product = {
             "id": len(products),
             "title": request.headers["Title"],
-            "descriptionHtml": request.text 
+            "descriptionHtml": ""
         }
 
         products.append(product)
 
         code, response = addFakeProductRatingAndDetails(product["id"])
-        if code != 200:
+        if code < 200 or code > 299:
             products.pop()
-
-        return json.dumps(getProducts()), 200, {'Content-Type': 'application/json', "Product-Page-Added": "True"}
+            return json.dumps(response), code, {'Content-Type': 'application/json', "Product-Page-Added": "False"}
+        else:
+            return json.dumps(getProducts()), 200, {'Content-Type': 'application/json', "Product-Page-Added": "True"}
 
     else:
         return json.dumps(getProducts()), 200, {'Content-Type': 'application/json'}
@@ -413,24 +414,24 @@ def addFakeProductRatingAndDetails(product_id):
                 "req1": {
                     "partial_req": {
                         "method": "GET",
-                        "url": "http://ratings.default.svc:9080/ratings/add/" + str(product_id),
+                        "url": "http://ratings.default.svc.cluster.local:9080/ratings/add/" + str(product_id),
                         "body": ""
                     },
                     "comp_req": {
                         "method": "GET",
-                        "url": "http://ratings.default.svc:9080/ratings/delete/" + str(product_id),
+                        "url": "http://ratings.default.svc.cluster.local:9080/ratings/delete/" + str(product_id),
                         "body": ""
                     }
                 },
                 "req2": {
                     "partial_req": {
                         "method": "GET",
-                        "url": "http://details.default.svc:9080/details/add/" + str(product_id),
+                        "url": "http://details.default.svc.cluster.local:9080/details/add/" + str(product_id),
                         "body": ""
                     },
                     "comp_req": {
                         "method": "GET",
-                        "url": "http://details.default.svc:9080/details/remove/" + str(product_id),
+                        "url": "http://details.default.svc.cluster.local:9080/details/remove/" + str(product_id),
                         "body": ""
                     }
                 }

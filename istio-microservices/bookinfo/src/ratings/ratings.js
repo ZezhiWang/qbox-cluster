@@ -43,6 +43,33 @@ if (process.env.SERVICE_VERSION === 'v-unhealthy') {
     }, 900000);
 }
 
+dispatcher.onGet(/^\/ratings\/add\/[0-9]*/, function (req, res) {
+
+  var productIdStr = req.url.split('/').pop()
+  var productId = parseInt(productIdStr)
+
+  fake_ratings = {}
+  fake_ratings[faker.name.findName()] = faker.random.number()
+  fake_ratings[faker.name.findName()] = faker.random.number()
+  fake_ratings[faker.name.findName()] = faker.random.number()
+  // [1, 2, 3].map(_ => {
+  //   fake_ratings[faker.name.findName()] = faker.random.number()
+  // })
+
+  putLocalReviews(productId, fake_ratings)
+  res.writeHead(200, { 'Content-type': 'application/json' })
+  res.end(JSON.stringify(userAddedRatings))
+})
+
+dispatcher.onGet(/^\/ratings\/delete\/[0-9]*/, function (req, res) {
+
+  var productIdStr = req.url.split('/').pop()
+  var productId = parseInt(productIdStr)
+
+  removeLocalReviews(productId)
+  res.writeHead(200, { 'Content-type': 'application/json' })
+  res.end(JSON.stringify(userAddedRatings))
+})
 
 dispatcher.onPost(/^\/ratings\/[0-9]*/, function (req, res) {
   var productIdStr = req.url.split('/').pop()
@@ -116,16 +143,7 @@ dispatcher.onGet('/health', function (req, res) {
 })
 
 
-dispatcher.onGet('/add', function (req, res) {
 
-    fake_ratings = {}
-    [1,2,3].map(_ => {
-      fake_ratings[faker.name.findName()] = faker.random.number()
-    })
-
-    putLocalReviews(req.headers["Product-Id"], fake_ratings)
-    return getLocalReviewsSuccessful(res, req.headers["Product-Id"])
-})
 
 function putLocalReviews (productId, ratings) {
   userAddedRatings[productId] = {
@@ -133,6 +151,13 @@ function putLocalReviews (productId, ratings) {
     ratings: ratings
   }
   return getLocalReviews(productId)
+}
+
+function removeLocalReviews (productId) {
+  if (productId in userAddedRatings) {
+    delete userAddedRatings[productId]
+  }
+  return null
 }
 
 function getLocalReviewsSuccessful(res, productId) {
