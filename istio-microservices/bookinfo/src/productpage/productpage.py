@@ -63,7 +63,7 @@ ratingsHostname = "ratings" if (os.environ.get("RATINGS_HOSTNAME") is None) else
 reviewsHostname = "reviews" if (os.environ.get("REVIEWS_HOSTNAME") is None) else os.environ.get("REVIEWS_HOSTNAME")
 
 # get sagas service name
-sagasHostname = "sagas" if (os.environ.get("SAGAS_HOSTNAME") is None) else os.environ.get("SAGAS_HOSTNAME")
+sagasHostname = "coordinator" if (os.environ.get("COORDINATOR_HOSTNAME") is None) else os.environ.get("COORDINATOR_HOSTNAME")
 
 flood_factor = 0 if (os.environ.get("FLOOD_FACTOR") is None) else int(os.environ.get("FLOOD_FACTOR"))
 
@@ -106,8 +106,8 @@ products = [
 ]
 
 sagas = {
-    "name": "http://{0}{1}:8080".format(sagasHostname, servicesDomain),
-    "endpoint": "sagas",
+    "name": "http://{}:8080".format(sagasHostname),
+    "endpoint": "saga",
 }
 
 # A note on distributed tracing:
