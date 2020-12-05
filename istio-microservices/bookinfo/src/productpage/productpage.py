@@ -14,7 +14,6 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-import copy
 from __future__ import print_function
 from flask_bootstrap import Bootstrap
 from flask import Flask, request, session, render_template, redirect, url_for
@@ -33,6 +32,7 @@ import logging
 import requests
 import os
 import asyncio
+import copy
 
 # These two lines enable debugging at httplib level (requests->urllib3->http.client)
 # You will see the REQUEST, including HEADERS and DATA, and RESPONSE with HEADERS but without DATA.
