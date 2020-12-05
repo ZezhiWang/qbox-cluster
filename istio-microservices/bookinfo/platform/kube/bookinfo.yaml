@@ -72,7 +72,7 @@ spec:
       serviceAccountName: bookinfo-details
       containers:
       - name: details
-        image: docker.io/abrevnov/examples-bookinfo-details-v1:latest
+        image: docker.io/herryzzwang/examples-bookinfo-details-v1:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 9080
