@@ -33,6 +33,7 @@ import requests
 import os
 import asyncio
 import copy
+import uuid
 
 # These two lines enable debugging at httplib level (requests->urllib3->http.client)
 # You will see the REQUEST, including HEADERS and DATA, and RESPONSE with HEADERS but without DATA.
@@ -407,7 +408,7 @@ def addFakeProductRatingAndDetails(product_id):
     Let the saga transaction begin! This request should be intersected by qbox,
     and the response should be returned from qbox
     """
-    url = sagas['name'] + "/" + sagas['endpoint']
+    url = sagas['name'] + "/" + sagas['endpoint'] + "/" + uuid.uuid4().get_hex()
     data = {
         "tier": {
             "0": {
